@@ -1,17 +1,21 @@
-package com.deadmandungeons.connect.messenger;
+package com.deadmandungeons.connect.commons;
 
 import java.lang.reflect.Type;
 import java.util.UUID;
 
-import com.deadmandungeons.connect.messenger.Messenger.Message;
-import com.deadmandungeons.connect.messenger.Messenger.MessageType;
-import com.google.gson.InstanceCreator;
+import com.deadmandungeons.connect.commons.Messenger.Message;
+import com.deadmandungeons.connect.commons.Messenger.MessageCreator;
+import com.deadmandungeons.connect.commons.Messenger.MessageType;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * A message type that is used to send a {@link Command} for the subject identified by {@link #getId()}
+ * @author Jon
+ */
 @MessageType("command")
 public class CommandMessage extends Message {
 	
-	public static final InstanceCreator<CommandMessage> CREATOR = new InstanceCreator<CommandMessage>() {
+	public static final MessageCreator<CommandMessage> CREATOR = new MessageCreator<CommandMessage>(CommandMessage.class) {
 		
 		@Override
 		public CommandMessage createInstance(Type type) {
@@ -43,5 +47,5 @@ public class CommandMessage extends Message {
 		REMOVE;
 		// more may be added
 	}
-
+	
 }

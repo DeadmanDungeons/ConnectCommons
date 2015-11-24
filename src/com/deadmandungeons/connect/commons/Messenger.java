@@ -1,4 +1,4 @@
-package com.deadmandungeons.connect.messenger;
+package com.deadmandungeons.connect.commons;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -22,26 +22,52 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 
+/**
+ * This class is used as a utility for easy serialization and deserialization of a {@link Message}.
+ * A Message is used to communicate between a server running ConnectMiddleware and its consumer and supplier clients.
+ * Messages are serialized to a JSON String, and deserialized back to the Message object while maintaining object type.
+ * @author Jon
+ */
 public final class Messenger {
+	
+	public static final String SUPPLIER_ID_HEADER = "X-AC-Supplier-ID";
+	public static final String SUPPLIER_PASS_HEADER = "X-AC-Supplier-Pass";
 	
 	private final Map<String, Class<? extends Message>> messageTypes;
 	private final Gson gson;
 	
+	/**
+	 * @return a new {@link Messenger.Builder} to be used to build a new Messenger instance
+	 */
 	public static Builder builder() {
 		return new Builder();
 	}
 	
+	/**
+	 * The Builder class for a {@link Messenger} instance that allows different {@link Message} types to be registered
+	 * and validated before the construction of the Messenger.<br>
+	 * The {@link StatusMessage} and {@link CommandMessage} types are registered for every Messenger instance.
+	 */
 	public static final class Builder {
 		
 		private final GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
 		private final Map<String, Class<? extends Message>> messageTypes = new HashMap<>();
 		
 		private Builder() {
-			registerMessageType(CommandMessage.class, CommandMessage.CREATOR);
-			registerMessageType(StatusMessage.class, StatusMessage.CREATOR);
+			registerMessageType(CommandMessage.CREATOR);
+			registerMessageType(StatusMessage.CREATOR);
 		}
 		
-		public <T extends Message> Builder registerMessageType(Class<T> typeClass, InstanceCreator<T> creator) {
+		/**
+		 * Register a {@link Message} type for the built Messenger instance. A Message type must be registered
+		 * in order to deserialize a message of that type using {@link Messenger#deserialize(String)}.
+		 * @param typeClass - the Message subclass of the type to register
+		 * @param creator - an InstanceCreator for the registered type. This creator can simply just return a new
+		 * instance of the Message with null values as they will get overwritten with the deserialized values.
+		 * @return this Builder instance
+		 */
+		public <T extends Message> Builder registerMessageType(MessageCreator<T> messageCreator) {
+			Class<T> typeClass = messageCreator.messageType;
 			if (typeClass == Message.class || !Message.class.isAssignableFrom(typeClass)) {
 				throw new IllegalArgumentException("typeClass must be a subclass of Message");
 			}
@@ -55,10 +81,14 @@ public final class Messenger {
 			}
 			
 			messageTypes.put(type, typeClass);
-			gsonBuilder.registerTypeAdapter(typeClass, creator);
+			gsonBuilder.registerTypeAdapter(typeClass, messageCreator);
 			return this;
 		}
 		
+		/**
+		 * Build the Messenger that will allow messages for any of the registered Message types to be deserialized.
+		 * @return the built Messenger instance
+		 */
 		public Messenger build() {
 			return new Messenger(this);
 		}
@@ -71,6 +101,10 @@ public final class Messenger {
 	}
 	
 	
+	/**
+	 * @param messages - the messages to serialize
+	 * @return the JSON of the serialized messages.
+	 */
 	public String serialize(Message... messages) {
 		// validate messages before serializing
 		for (Message msg : messages) {
@@ -81,8 +115,15 @@ public final class Messenger {
 		return gson.toJson(messages, Message[].class);
 	}
 	
+	/**
+	 * This can accept a single JSON Message object, or an array of JSON Message objects.
+	 * @param rawMsg - the raw message(s) in JSON format to deserialize
+	 * @return an Array of the deserialized Message objects
+	 * @throws MessageParseException if rawMsg is not a valid representation for a Message of the type it specifies
+	 */
 	public Message[] deserialize(String rawMsg) throws MessageParseException {
 		Message[] messages = null;
+		rawMsg = rawMsg.trim();
 		if (rawMsg.startsWith("[") && rawMsg.endsWith("]")) {
 			messages = getObjFromJson(rawMsg, Message[].class);
 			if (messages.length == 0) {
@@ -106,11 +147,18 @@ public final class Messenger {
 		}
 	}
 	
+	
 	private static String normalize(String str) {
 		return (str != null ? str.trim().toLowerCase() : null);
 	}
 	
 	
+	/**
+	 * This abstract class is the base for a Message which can be serialized to and deserialized from a JSON String.
+	 * All subclasses must be annotated with the {@link MessageType} annotation which is used as the type identifier
+	 * for deserializing a Message to the proper subclass type.
+	 * @author Jon
+	 */
 	public static abstract class Message {
 		
 		private static final Map<Class<? extends Message>, String> types = new HashMap<>();
@@ -123,20 +171,36 @@ public final class Messenger {
 			type = getType(getClass());
 		}
 		
+		/**
+		 * @return the type of this Message
+		 */
 		public String getType() {
 			return type;
 		}
 		
+		/**
+		 * @return the UUID that identifies the subject of this message
+		 */
 		public UUID getId() {
 			return id;
 		}
 		
+		/**
+		 * Validate that {@link #getId()} is not null and {@link #getData()} is valid
+		 * @return true if the message valid and false otherwise
+		 */
 		public final boolean isValid() {
 			return id != null && isDataValid();
 		}
 		
+		/**
+		 * @return the payload data object of this Message
+		 */
 		public abstract Object getData();
 		
+		/**
+		 * @return true if the payload data object of this message ({@link #getData()}) is valid
+		 */
 		protected abstract boolean isDataValid();
 		
 		private static String getType(Class<? extends Message> messageClass) {
@@ -163,6 +227,16 @@ public final class Messenger {
 	public static @interface MessageType {
 		
 		String value();
+		
+	}
+	
+	public static abstract class MessageCreator<T extends Message> implements InstanceCreator<T> {
+		
+		private final Class<T> messageType;
+		
+		public MessageCreator(Class<T> messageType) {
+			this.messageType = messageType;
+		}
 		
 	}
 	
