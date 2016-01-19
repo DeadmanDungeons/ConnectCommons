@@ -30,8 +30,8 @@ import com.google.gson.JsonSerializer;
  */
 public final class Messenger {
 	
-	public static final String SUPPLIER_ID_HEADER = "X-AC-Supplier-ID";
-	public static final String SUPPLIER_PASS_HEADER = "X-AC-Supplier-Pass";
+	public static final String USER_ID_HEADER = "X-AC-User-Id";
+	public static final String SUPPLIER_ID_HEADER = "X-AC-Supplier-Id";
 	
 	private final Map<String, Class<? extends Message>> messageTypes;
 	private final Gson gson;
