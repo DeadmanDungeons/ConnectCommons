@@ -3,6 +3,7 @@ package com.deadmandungeons.connect.commons;
 import java.lang.reflect.Type;
 import java.util.UUID;
 
+import com.deadmandungeons.connect.commons.Messenger.IdentifiableMessage;
 import com.deadmandungeons.connect.commons.Messenger.Message;
 import com.deadmandungeons.connect.commons.Messenger.MessageCreator;
 import com.deadmandungeons.connect.commons.Messenger.MessageType;
@@ -13,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
  * @author Jon
  */
 @MessageType("command")
-public class CommandMessage extends Message {
+public class CommandMessage extends IdentifiableMessage {
 	
 	public static final MessageCreator<CommandMessage> CREATOR = new MessageCreator<CommandMessage>(CommandMessage.class) {
 		

@@ -56,6 +56,7 @@ public final class Messenger {
 		private Builder() {
 			registerMessageType(CommandMessage.CREATOR);
 			registerMessageType(StatusMessage.CREATOR);
+			registerMessageType(HeartbeatMessage.CREATOR);
 		}
 		
 		/**
@@ -161,13 +162,13 @@ public final class Messenger {
 	 */
 	public static abstract class Message {
 		
+		// protected static final UUID NO_SUBJECT_ID
+		
 		private static final Map<Class<? extends Message>, String> types = new HashMap<>();
 		
 		private final String type;
-		private final UUID id;
 		
-		protected Message(UUID id) {
-			this.id = id;
+		protected Message() {
 			type = getType(getClass());
 		}
 		
@@ -178,30 +179,18 @@ public final class Messenger {
 			return type;
 		}
 		
-		/**
-		 * @return the UUID that identifies the subject of this message
-		 */
-		public UUID getId() {
-			return id;
-		}
 		
 		/**
 		 * Validate that {@link #getId()} is not null and {@link #getData()} is valid
 		 * @return true if the message valid and false otherwise
 		 */
-		public final boolean isValid() {
-			return id != null && isDataValid();
-		}
+		public abstract boolean isValid();
 		
 		/**
 		 * @return the payload data object of this Message
 		 */
 		public abstract Object getData();
 		
-		/**
-		 * @return true if the payload data object of this message ({@link #getData()}) is valid
-		 */
-		protected abstract boolean isDataValid();
 		
 		private static String getType(Class<? extends Message> messageClass) {
 			String type = types.get(messageClass);
@@ -219,6 +208,33 @@ public final class Messenger {
 			}
 			return type;
 		}
+		
+	}
+	
+	public abstract static class IdentifiableMessage extends Message {
+		
+		private final UUID id;
+		
+		protected IdentifiableMessage(UUID id) {
+			this.id = id;
+		}
+		
+		/**
+		 * @return the UUID that identifies the subject of this message
+		 */
+		public UUID getId() {
+			return id;
+		}
+		
+		@Override
+		public boolean isValid() {
+			return id != null && isDataValid();
+		}
+		
+		/**
+		 * @return true if the payload data object of this message ({@link #getData()}) is valid
+		 */
+		protected abstract boolean isDataValid();
 		
 	}
 	

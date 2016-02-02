@@ -3,6 +3,7 @@ package com.deadmandungeons.connect.commons;
 import java.lang.reflect.Type;
 import java.util.UUID;
 
+import com.deadmandungeons.connect.commons.Messenger.IdentifiableMessage;
 import com.deadmandungeons.connect.commons.Messenger.Message;
 import com.deadmandungeons.connect.commons.Messenger.MessageCreator;
 import com.deadmandungeons.connect.commons.Messenger.MessageType;
@@ -13,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
  * @author Jon
  */
 @MessageType("status")
-public class StatusMessage extends Message {
+public class StatusMessage extends IdentifiableMessage {
 	
 	public static final MessageCreator<StatusMessage> CREATOR = new MessageCreator<StatusMessage>(StatusMessage.class) {
 		
