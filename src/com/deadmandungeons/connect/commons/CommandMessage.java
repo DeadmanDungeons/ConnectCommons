@@ -45,7 +45,11 @@ public class CommandMessage extends IdentifiableMessage {
 		@SerializedName("add")
 		ADD,
 		@SerializedName("remove")
-		REMOVE;
+		REMOVE,
+		@SerializedName("mute")
+		MUTE,
+		@SerializedName("unmute")
+		UNMUTE;
 		// more may be added
 	}
 	
