@@ -23,8 +23,7 @@ public class HeartbeatMessage extends Message {
 		this.data = data;
 	}
 	
-	@Override
-	public Object getData() {
+	public String getData() {
 		return data;
 	}
 	

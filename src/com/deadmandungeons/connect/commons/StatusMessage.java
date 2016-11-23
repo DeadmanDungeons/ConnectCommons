@@ -31,14 +31,13 @@ public class StatusMessage extends IdentifiableMessage {
 		this.status = status;
 	}
 	
-	@Override
-	public Status getData() {
+	public Status getStatus() {
 		return status;
 	}
 	
 	@Override
-	protected boolean isDataValid() {
-		return status != null;
+	public boolean isValid() {
+		return super.isValid() && status != null;
 	}
 	
 	public static enum Status {

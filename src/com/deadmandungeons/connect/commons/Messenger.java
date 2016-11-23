@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +55,6 @@ public final class Messenger {
 		private final Map<String, Class<? extends Message>> messageTypes = new HashMap<>();
 		
 		private Builder() {
-			registerMessageType(CommandMessage.CREATOR);
 			registerMessageType(StatusMessage.CREATOR);
 			registerMessageType(HeartbeatMessage.CREATOR);
 		}
@@ -101,6 +101,14 @@ public final class Messenger {
 		gson = builder.gsonBuilder.registerTypeAdapter(Message.class, new MessageDeserializer()).create();
 	}
 	
+	
+	/**
+	 * @param messages - the messages to serialize
+	 * @return the JSON of the serialized messages.
+	 */
+	public String serialize(Collection<Message> messages) {
+		return serialize(messages.toArray(new Message[messages.size()]));
+	}
 	
 	/**
 	 * @param messages - the messages to serialize
@@ -162,8 +170,6 @@ public final class Messenger {
 	 */
 	public static abstract class Message {
 		
-		// protected static final UUID NO_SUBJECT_ID
-		
 		private static final Map<Class<? extends Message>, String> types = new HashMap<>();
 		
 		private final String type;
@@ -181,15 +187,10 @@ public final class Messenger {
 		
 		
 		/**
-		 * Validate that {@link #getId()} is not null and {@link #getData()} is valid
-		 * @return true if the message valid and false otherwise
+		 * Validate that this message and its data is valid
+		 * @return <code>true</code> if the message is valid and <code>false</code> otherwise
 		 */
 		public abstract boolean isValid();
-		
-		/**
-		 * @return the payload data object of this Message
-		 */
-		public abstract Object getData();
 		
 		
 		private static String getType(Class<? extends Message> messageClass) {
@@ -228,13 +229,8 @@ public final class Messenger {
 		
 		@Override
 		public boolean isValid() {
-			return id != null && isDataValid();
+			return id != null;
 		}
-		
-		/**
-		 * @return true if the payload data object of this message ({@link #getData()}) is valid
-		 */
-		protected abstract boolean isDataValid();
 		
 	}
 	
