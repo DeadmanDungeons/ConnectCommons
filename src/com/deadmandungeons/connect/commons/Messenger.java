@@ -32,6 +32,7 @@ import com.google.gson.JsonSerializer;
 public final class Messenger {
 	
 	public static final String USER_ID_HEADER = "X-AC-User-Id";
+	public static final String USER_PASSWORD_HEADER = "X-AC-User-Password";
 	public static final String SUPPLIER_ID_HEADER = "X-AC-Supplier-Id";
 	
 	private final Map<String, Class<? extends Message>> messageTypes;
@@ -248,6 +249,10 @@ public final class Messenger {
 		
 		public MessageCreator(Class<T> messageType) {
 			this.messageType = messageType;
+		}
+		
+		public Class<T> getMessageType() {
+			return messageType;
 		}
 		
 	}
