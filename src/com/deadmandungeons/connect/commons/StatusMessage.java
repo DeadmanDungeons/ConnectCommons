@@ -41,10 +41,10 @@ public class StatusMessage extends IdentifiableMessage {
 	}
 	
 	public static enum Status {
-		@SerializedName("connected")
-		CONNECTED,
-		@SerializedName("disconnected")
-		DISCONNECTED;
+		@SerializedName("online")
+		ONLINE,
+		@SerializedName("offline")
+		OFFLINE;
 	}
 	
 }
