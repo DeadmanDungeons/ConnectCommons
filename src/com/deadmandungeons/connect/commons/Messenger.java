@@ -6,11 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
@@ -24,7 +24,7 @@ import com.google.gson.JsonSerializer;
 
 
 /**
- * This class is used as a utility for easy serialization and deserialization of a {@link Message}.
+ * This class is used as a thread safe utility for easy serialization and deserialization of a {@link Message}.
  * A Message is used to communicate between a server running ConnectMiddleware and its consumer and supplier clients.
  * Messages are serialized to a JSON String, and deserialized back to the Message object while maintaining object type.
  * @author Jon
@@ -98,7 +98,7 @@ public final class Messenger {
 	}
 	
 	private Messenger(Builder builder) {
-		this.messageTypes = Collections.unmodifiableMap(builder.messageTypes);
+		this.messageTypes = ImmutableMap.copyOf(builder.messageTypes);
 		gson = builder.gsonBuilder.registerTypeAdapter(Message.class, new MessageDeserializer()).create();
 	}
 	
