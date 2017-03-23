@@ -10,8 +10,8 @@ import com.google.common.io.BaseEncoding;
 
 public class ConnectUtils {
 	
-	private static final BaseEncoding UUID_ENCODING = BaseEncoding.base64Url().omitPadding();
-	private static final Pattern UUID_NO_HYPHEN_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
+	protected static final BaseEncoding BASE_64_URL_ENCODING = BaseEncoding.base64Url().omitPadding();
+	protected static final Pattern UUID_NO_HYPHEN_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 	
 	protected ConnectUtils() {}
 	
@@ -25,7 +25,7 @@ public class ConnectUtils {
 		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
 		bb.putLong(uuid.getMostSignificantBits());
 		bb.putLong(uuid.getLeastSignificantBits());
-		return UUID_ENCODING.encode(bb.array());
+		return BASE_64_URL_ENCODING.encode(bb.array());
 	}
 	
 	/**
@@ -37,7 +37,7 @@ public class ConnectUtils {
 	public static UUID decodeUuidBase64(String encodedId) {
 		if (encodedId != null) {
 			try {
-				byte[] bytes = UUID_ENCODING.decode(encodedId);
+				byte[] bytes = BASE_64_URL_ENCODING.decode(encodedId);
 				ByteBuffer bb = ByteBuffer.wrap(bytes);
 				return new UUID(bb.getLong(), bb.getLong());
 			} catch (Exception e) {
