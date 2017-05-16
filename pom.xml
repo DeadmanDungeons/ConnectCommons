@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.deadmandungeons</groupId>
 	<artifactId>connect-commons</artifactId>
-	<version>1.1.3</version>
+	<version>1.1.4</version>
 	<name>ConnectCommons</name>
 
 	<build>
@@ -22,18 +22,17 @@
 	</build>
 
 	<dependencies>
-
+		<!-- bundled with Minecraft, should be kept in sync -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.3.1</version>
+			<version>2.2.4</version>
 		</dependency>
-
+		<!-- bundled with Minecraft, should be kept in sync -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>18.0</version>
+			<version>17.0</version>
 		</dependency>
-
 	</dependencies>
 </project>
