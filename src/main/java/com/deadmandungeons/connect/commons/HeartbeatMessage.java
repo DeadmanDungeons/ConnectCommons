@@ -1,5 +1,6 @@
 package com.deadmandungeons.connect.commons;
 
+import com.deadmandungeons.connect.commons.Messenger.InvalidDataException;
 import com.deadmandungeons.connect.commons.Messenger.Message;
 import com.deadmandungeons.connect.commons.Messenger.MessageCreator;
 import com.deadmandungeons.connect.commons.Messenger.MessageType;
@@ -28,8 +29,10 @@ public class HeartbeatMessage extends Message {
     }
 
     @Override
-    public boolean isValid() {
-        return data != null;
+    public void validate() throws InvalidDataException {
+        if (data == null) {
+            throw new InvalidDataException("heartbeat data cannot be null");
+        }
     }
 
 }

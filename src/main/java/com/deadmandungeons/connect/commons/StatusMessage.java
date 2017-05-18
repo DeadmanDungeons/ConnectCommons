@@ -1,6 +1,7 @@
 package com.deadmandungeons.connect.commons;
 
 import com.deadmandungeons.connect.commons.Messenger.IdentifiableMessage;
+import com.deadmandungeons.connect.commons.Messenger.InvalidDataException;
 import com.deadmandungeons.connect.commons.Messenger.MessageCreator;
 import com.deadmandungeons.connect.commons.Messenger.MessageType;
 import com.google.gson.annotations.SerializedName;
@@ -35,8 +36,11 @@ public class StatusMessage extends IdentifiableMessage {
     }
 
     @Override
-    public boolean isValid() {
-        return super.isValid() && status != null;
+    public void validate() throws InvalidDataException {
+        super.validate();
+        if (status == null) {
+            throw new InvalidDataException("status cannot be null");
+        }
     }
 
     public enum Status {

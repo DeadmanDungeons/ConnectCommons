@@ -113,12 +113,15 @@ public final class Messenger {
     /**
      * @param messages the messages to serialize
      * @return the JSON of the serialized messages.
+     * @throws IllegalArgumentException if any message is invalid ({@link Message#validate()})
      */
-    public String serialize(Message... messages) {
+    public String serialize(Message... messages) throws IllegalArgumentException {
         // validate messages before serializing
         for (Message msg : messages) {
-            if (!msg.isValid()) {
-                throw new IllegalArgumentException("serialized messages must be valid");
+            try {
+                msg.validate();
+            } catch (InvalidDataException e) {
+                throw new IllegalArgumentException("serialized messages must be valid", e);
             }
         }
         return gson.toJson(messages, Message[].class);
@@ -126,6 +129,7 @@ public final class Messenger {
 
     /**
      * This can accept a single JSON Message object, or an array of JSON Message objects.
+     * <p><b>Note:</b> The returned Messages will not have been validated yet with {@link Message#validate()}</p>
      * @param rawMsg the raw message(s) in JSON format to deserialize
      * @return an Array of the deserialized Message objects
      * @throws MessageParseException if rawMsg is not a valid representation for a Message of the type it specifies
@@ -188,9 +192,9 @@ public final class Messenger {
 
         /**
          * Validate that this message and its data is valid
-         * @return <code>true</code> if the message is valid and <code>false</code> otherwise
+         * @throws InvalidDataException if this message and its data is invalid
          */
-        public abstract boolean isValid();
+        public abstract void validate() throws InvalidDataException;
 
 
         private static String getType(Class<? extends Message> messageClass) {
@@ -228,8 +232,10 @@ public final class Messenger {
         }
 
         @Override
-        public boolean isValid() {
-            return id != null;
+        public void validate() throws InvalidDataException {
+            if (id == null) {
+                throw new InvalidDataException("id cannot be null");
+            }
         }
 
     }
@@ -266,6 +272,20 @@ public final class Messenger {
 
         public MessageParseException(JsonParseException cause) {
             super(cause.getMessage(), cause);
+        }
+
+    }
+
+    public static class InvalidDataException extends Exception {
+
+        private static final long serialVersionUID = 330763119431699203L;
+
+        public InvalidDataException(String message) {
+            super(message);
+        }
+
+        public InvalidDataException(String message, Throwable throwable) {
+            super(message, throwable);
         }
 
     }
