@@ -4,7 +4,7 @@ import com.deadmandungeons.connect.commons.Messenger.IdentifiableMessage;
 import com.deadmandungeons.connect.commons.Messenger.InvalidDataException;
 import com.deadmandungeons.connect.commons.Messenger.MessageCreator;
 import com.deadmandungeons.connect.commons.Messenger.MessageType;
-import com.google.gson.annotations.SerializedName;
+import org.bukkit.craftbukkit.libs.com.google.gson.annotations.SerializedName;
 
 import java.lang.reflect.Type;
 import java.util.UUID;

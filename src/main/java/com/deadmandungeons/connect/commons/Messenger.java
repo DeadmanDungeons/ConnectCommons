@@ -1,16 +1,16 @@
 package com.deadmandungeons.connect.commons;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.InstanceCreator;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
+import org.bukkit.craftbukkit.libs.com.google.gson.InstanceCreator;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonDeserializationContext;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonDeserializer;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonElement;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonObject;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonSerializationContext;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonSerializer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
