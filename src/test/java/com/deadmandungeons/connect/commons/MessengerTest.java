@@ -8,6 +8,7 @@ import com.deadmandungeons.connect.commons.messenger.messages.MessageType;
 import com.deadmandungeons.connect.commons.messenger.messages.StatusMessage;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import static org.junit.Assert.assertTrue;
@@ -49,6 +50,21 @@ public class MessengerTest {
         }
     }
 
+    @Test
+    public void testMessageTypeRegistrationWithArrayParameter() throws MessageParseException {
+        ArrayMessageType arrayMessage = new ArrayMessageType("Arrays Work");
+
+        Messenger messenger = Messenger.builder().registerMessageType(ArrayMessageType.class).build();
+        for (int i = 0; i < 5; i++) {
+            String json = messenger.serialize(arrayMessage);
+            Message[] deserialized = messenger.deserialize(json);
+
+            assertTrue(deserialized != null && deserialized.length == 1);
+            assertTrue(deserialized[0].getType().equals(arrayMessage.getType()));
+            assertTrue(Arrays.equals(((ArrayMessageType) deserialized[0]).values, arrayMessage.values));
+        }
+    }
+
     // TODO add more tests
 
     @MessageType("$$ INVALID $$")
@@ -67,6 +83,21 @@ public class MessengerTest {
 
         private PrivateMessageType(String value) {
             this.value = value;
+        }
+
+        @Override
+        public void validate() throws InvalidMessageException {
+            // valid
+        }
+    }
+
+    @MessageType("array")
+    private static class ArrayMessageType extends Message {
+
+        private final String[] values;
+
+        private ArrayMessageType(String... values) {
+            this.values = values;
         }
 
         @Override

@@ -12,6 +12,7 @@ import com.deadmandungeons.connect.commons.messenger.serializers.MessageSerializ
 import com.google.common.base.Defaults;
 import com.google.common.base.Supplier;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -181,7 +182,8 @@ public final class Messenger {
             Class<?>[] paramTypes = constructor.getParameterTypes();
             Object[] params = new Object[paramTypes.length];
             for (int i = 0; i < params.length; i++) {
-                params[i] = Defaults.defaultValue(paramTypes[i]);
+                Class<?> paramType = paramTypes[i];
+                params[i] = (paramType.isArray() ? Array.newInstance(paramType.getComponentType(), 0) : Defaults.defaultValue(paramType));
             }
 
             @SuppressWarnings("unchecked")
