@@ -34,6 +34,21 @@ public class MessengerTest {
         assertTrue(((StatusMessage) deserialized[0]).getStatus() == statusMessage.getStatus());
     }
 
+    @Test
+    public void testPrivateMessageTypeRegistration() throws MessageParseException {
+        PrivateMessageType privateMessage = new PrivateMessageType("Private Access Works");
+
+        Messenger messenger = Messenger.builder().registerMessageType(PrivateMessageType.class).build();
+        for (int i = 0; i < 5; i++) {
+            String json = messenger.serialize(privateMessage);
+            Message[] deserialized = messenger.deserialize(json);
+
+            assertTrue(deserialized != null && deserialized.length == 1);
+            assertTrue(deserialized[0].getType().equals(privateMessage.getType()));
+            assertTrue(((PrivateMessageType) deserialized[0]).value.equals(privateMessage.value));
+        }
+    }
+
     // TODO add more tests
 
     @MessageType("$$ INVALID $$")
@@ -42,6 +57,21 @@ public class MessengerTest {
         @Override
         public void validate() throws InvalidMessageException {
             throw new InvalidMessageException("INVALID");
+        }
+    }
+
+    @MessageType("private")
+    private static class PrivateMessageType extends Message {
+
+        private final String value;
+
+        private PrivateMessageType(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public void validate() throws InvalidMessageException {
+            // valid
         }
     }
 

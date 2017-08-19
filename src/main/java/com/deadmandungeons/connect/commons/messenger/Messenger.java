@@ -160,6 +160,9 @@ public final class Messenger {
 
         RuntimeException exception = null;
         for (Constructor<?> constructor : sortedConstructors) {
+            if (!constructor.isAccessible()) {
+                constructor.setAccessible(true);
+            }
             try {
                 newInstance(constructor);
                 return constructor;
