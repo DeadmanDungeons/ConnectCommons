@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.deadmandungeons</groupId>
     <artifactId>connect-commons</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <name>ConnectCommons</name>
 
     <build>
@@ -20,18 +20,38 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>deadman-dungeons</id>
+            <url>https://deadmandungeons.com/artifactory/public</url>
+        </repository>
+    </repositories>
+
     <dependencies>
-        <!-- bundled with Minecraft, should be kept in sync -->
+        <!-- bundled with Craftbukkit/Spigot v1.8.2 and above -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.2.4</version>
         </dependency>
-        <!-- bundled with Minecraft, should be kept in sync -->
+        <!-- bundled with Craftbukkit/Spigot v1.8 and below -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson-craftbukkit</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+        <!-- bundled with Craftbukkit/Spigot -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>17.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

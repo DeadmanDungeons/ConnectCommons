@@ -1,5 +1,7 @@
 package com.deadmandungeons.connect.commons;
 
+import com.deadmandungeons.connect.commons.messenger.exceptions.IdentifierSyntaxException;
+import com.deadmandungeons.connect.commons.messenger.exceptions.IdentifierSyntaxException.SyntaxError;
 import com.google.common.io.BaseEncoding;
 
 import java.net.MalformedURLException;
@@ -90,6 +92,50 @@ public class ConnectUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * A useful function to check the existence of a class at runtime for compatibility checks.
+     * <p>
+     * This simply calls {@link Class#forName(String)} and chatches exceptions.
+     * @param className the fully qualified class name to check
+     * @return <code>true</code> if a class with the given className does exist in the current ClassLoader context
+     */
+    public static boolean checkClass(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Validates that the given identifier is not empty, between 3 to 50 characters,
+     * and contains only ASCII alpha-numeric or dash characters
+     * @param identifier the identifier to validate
+     * @throws IdentifierSyntaxException if the given identifier has invalid syntax
+     */
+    public static void validateIdentifier(String identifier) throws IdentifierSyntaxException {
+        if (identifier == null || identifier.isEmpty()) {
+            throw new IdentifierSyntaxException(SyntaxError.EMPTY);
+        }
+        if (identifier.length() < 3) {
+            throw new IdentifierSyntaxException(SyntaxError.MIN_LENGTH, 3);
+        }
+        if (identifier.length() > 50) {
+            throw new IdentifierSyntaxException(SyntaxError.MAX_LENGTH, 50);
+        }
+        for (int i = 0; i < identifier.length(); i++) {
+            char character = identifier.charAt(i);
+            if (!isAsciiAlphaNumeric(character) && character != '-' && character != '_') {
+                throw new IdentifierSyntaxException(SyntaxError.INVALID_CHAR, character);
+            }
+        }
+    }
+
+    private static boolean isAsciiAlphaNumeric(char c) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
     }
 
 }
