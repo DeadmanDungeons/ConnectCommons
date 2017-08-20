@@ -1,7 +1,6 @@
 package com.deadmandungeons.connect.commons.messenger.messages;
 
 import com.deadmandungeons.connect.commons.messenger.exceptions.InvalidMessageException;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.UUID;
 
@@ -32,9 +31,7 @@ public class StatusMessage extends IdentifiableMessage {
     }
 
     public enum Status {
-        @SerializedName("online")
         ONLINE,
-        @SerializedName("offline")
         OFFLINE
     }
 

@@ -36,7 +36,7 @@ public class MessengerTest {
     }
 
     @Test
-    public void testPrivateMessageTypeRegistration() throws MessageParseException {
+    public void testMessengerDeserializationWithPrivateMessage() throws MessageParseException {
         PrivateMessageType privateMessage = new PrivateMessageType("Private Access Works");
 
         Messenger messenger = Messenger.builder().registerMessageType(PrivateMessageType.class).build();
@@ -51,7 +51,7 @@ public class MessengerTest {
     }
 
     @Test
-    public void testMessageTypeRegistrationWithArrayParameter() throws MessageParseException {
+    public void testMessengerDeserializationWithArrayParameter() throws MessageParseException {
         ArrayMessageType arrayMessage = new ArrayMessageType("Arrays Work");
 
         Messenger messenger = Messenger.builder().registerMessageType(ArrayMessageType.class).build();
@@ -63,6 +63,18 @@ public class MessengerTest {
             assertTrue(deserialized[0].getType().equals(arrayMessage.getType()));
             assertTrue(Arrays.equals(((ArrayMessageType) deserialized[0]).values, arrayMessage.values));
         }
+    }
+
+    @Test
+    public void testMessengerDeserializationWithEnumFields() throws MessageParseException {
+        String statusMessageJson = "[{\"status\":\"ONline\",\"id\":\"780e33be-1d57-4f15-9b8e-370e82c2378b\",\"type\":\"status\"}]";
+
+        Messenger messenger = Messenger.builder().build();
+        Message[] deserialized = messenger.deserialize(statusMessageJson);
+
+        assertTrue(deserialized != null && deserialized.length == 1);
+        assertTrue(deserialized[0].getType().equals("status"));
+        assertTrue(((StatusMessage) deserialized[0]).getStatus() == StatusMessage.Status.ONLINE);
     }
 
     // TODO add more tests

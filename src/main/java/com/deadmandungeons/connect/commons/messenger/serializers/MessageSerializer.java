@@ -4,6 +4,8 @@ import com.deadmandungeons.connect.commons.messenger.exceptions.MessageParseExce
 import com.deadmandungeons.connect.commons.messenger.messages.Message;
 import com.google.common.base.Supplier;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,6 +33,19 @@ public abstract class MessageSerializer {
             throw new IllegalArgumentException("Cannot deserialize json Message of unknown type '" + messageType + "'");
         }
         return messageClass;
+    }
+
+    protected <T> Map<String, T> getEnumConstants(Class<? super T> enumType) {
+        if (enumType.isEnum()) {
+            Map<String, T> enumConstants = new HashMap<>();
+            for (Object enumValue : enumType.getEnumConstants()) {
+                @SuppressWarnings("unchecked")
+                T enumConstant = (T) enumValue;
+                enumConstants.put(((Enum<?>) enumConstant).name(), enumConstant);
+            }
+            return enumConstants;
+        }
+        return Collections.emptyMap();
     }
 
     private static String normalizeTypeName(String str) {
